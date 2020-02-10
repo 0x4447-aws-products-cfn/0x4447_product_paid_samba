@@ -1,0 +1,46 @@
+{
+	"EC2SecurityGroup": {
+		"Type": "AWS::EC2::SecurityGroup",
+		"Properties": {
+			"GroupDescription": "Samba and EFS access",
+			"GroupName": { "Fn::Sub": "${ProjectNameParam}-samba-server" },
+			"VpcId": { "Ref": "VPCParam" },
+			"SecurityGroupEgress": [
+				{
+					"IpProtocol": "-1",
+					"FromPort": -1,
+					"ToPort": -1,
+					"CidrIp": "0.0.0.0/0"
+				}
+			],
+			"SecurityGroupIngress": [
+				{
+					"IpProtocol": "tcp",
+					"FromPort": 2049,
+					"ToPort": 2049,
+					"CidrIp": "0.0.0.0/0"
+				},
+				{
+					"IpProtocol": "tcp",
+					"FromPort": 445,
+					"ToPort": 445,
+					"CidrIp": "0.0.0.0/0"
+				}
+			],
+			"Tags": [
+                {
+                    "Key" : "Name",
+                    "Value" : "samba-server"
+                },
+                {
+                    "Key" : "Author",
+                    "Value" : "0x4447 LLC"
+                },
+                {
+                    "Key" : "Info",
+                    "Value" : "https://0x4447.com"
+                }
+            ]
+		}
+	}
+}

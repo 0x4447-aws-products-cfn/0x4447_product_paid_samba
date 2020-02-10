@@ -1,0 +1,6 @@
+{
+	"DriveArrayParam": {
+		"Description": "a Bash array of EFS or EBS drives (space spearated only!!!)",
+		"Type": "String"
+	}
+}

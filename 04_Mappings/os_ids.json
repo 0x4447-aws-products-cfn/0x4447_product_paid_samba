@@ -1,0 +1,39 @@
+{
+	"OSIDs": {
+		"us-east-1": 		{ "64": "ami-05b2f27970e71bcf6" },
+		"us-east-2": 		{ "64": "ami-021ef60b25095762e" },
+		"us-west-1": 		{ "64": "ami-0852a372a89a63893" },
+		"us-west-2": 		{ "64": "ami-02c7dfd5a2b7430e6" },
+		"ca-central-1": 	{ "64": "ami-03b4574c51e884a7a" },
+		"eu-central-1": 	{ "64": "ami-00c174385c5d955a4" },
+		"eu-west-1": 		{ "64": "ami-0380b942426150ac5" },
+		"eu-west-2": 		{ "64": "ami-06bd102ae080f379a" },
+		"eu-west-3": 		{ "64": "ami-05dec839052c8d1d4" },
+		"eu-north-1": 		{ "64": "ami-04f72ad12801a72cf" },
+		"ap-southeast-1": 	{ "64": "ami-0e6ff58bb16bb93c7" },
+		"ap-southeast-2": 	{ "64": "ami-02ab18f5315f9535e" },
+		"ap-south-1": 		{ "64": "ami-093524baa6b5de0e1" },
+		"ap-northeast-1": 	{ "64": "ami-084a7770fca55de89" },
+		"ap-northeast-2": 	{ "64": "ami-0f48983976edd3e82" },
+		"sa-east-1": 		{ "64": "ami-083b7be64e3ec08e4" }
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

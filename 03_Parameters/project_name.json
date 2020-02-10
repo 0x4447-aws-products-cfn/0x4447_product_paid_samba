@@ -1,0 +1,6 @@
+{
+	"ProjectNameParam": {
+		"Description": "The name of the project you are deploying the log server for.",
+		"Type": "String"
+	}
+}

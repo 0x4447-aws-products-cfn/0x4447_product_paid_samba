@@ -1,0 +1,70 @@
+{
+    "EC2Instance": {
+        "Type" : "AWS::EC2::Instance",
+        "Properties" : {
+            "InstanceType" : { "Ref": "InstanceTypesParam" },
+            "ImageId": { "Fn::FindInMap": ["OSIDs", {"Ref": "AWS::Region"}, "64"] },
+            "IamInstanceProfile": { "Ref": "ECSInstanceProfile" },
+            "UserData": { "Fn::Base64": { "Fn::Join": ["\n", [
+
+                "#!/usr/bin/env bash",
+
+                { "Fn::Sub": "DRIVES=${DriveArrayParam}" },
+
+                "# Create .env file with an array of EBS and EFS drives.",
+                
+                "cat << EOF > /home/ec2-user/.env",
+                "PERSISTENCE=($DRIVES)",
+                "EOF",
+
+                { "Fn::Sub": "sudo /opt/aws/bin/cfn-init -v --region ${AWS::Region} --stack ${AWS::StackName} --resource EC2Instance" },
+
+                { "Fn::Sub": "sudo /opt/aws/bin/cfn-signal -s true --region ${AWS::Region} --stack ${AWS::StackName} --resource EC2Instance" }
+
+            ]]}},
+            "NetworkInterfaces": [ {
+                "AssociatePublicIpAddress": "false",
+                "DeviceIndex": "0",
+                "GroupSet": [{ "Ref" : "EC2SecurityGroup" }],
+                "SubnetId": { "Ref" : "VPCSubnetsAPrivateParam" },
+                "PrivateIpAddress": { "Ref": "PrivateIpAddressParam" }
+            }],
+            "Tags": [
+                {
+                    "Key" : "Name",
+                    "Value" : { "Fn::Sub": "${AWS::StackName}" }
+                },
+                {
+                    "Key" : "Description",
+                    "Value" : "Samba server to share multiple drives at once."
+                },
+                {
+                    "Key" : "Author",
+                    "Value" : "0x4447 LLC"
+                },
+                {
+                    "Key" : "Info",
+                    "Value" : "https://0x4447.com"
+                }
+            ]
+        },
+        "Metadata": {
+            "AWS::CloudFormation::Init" : {
+                "config" : {
+                    "services": {
+                        "sysvinit": {
+                            "cfn-hup": {
+                                "enabled": true,
+                                "ensureRunning": true,
+                                "files": [
+                                    "/etc/cfn/cfn-hup.conf",
+                                    "/etc/cfn/hooks.d/cfn-auto-reloader.conf"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
