@@ -1,7 +1,0 @@
-{
-	"PrivateIpAddressParam": {
-		"Description": "Set a private local IP address for the log server, so it will always be the same.",
-		"Default": "10.0.0.31",
-		"Type": "String"
-	}
-}

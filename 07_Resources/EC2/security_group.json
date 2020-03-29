@@ -2,8 +2,8 @@
 	"EC2SecurityGroup": {
 		"Type": "AWS::EC2::SecurityGroup",
 		"Properties": {
-			"GroupDescription": "Samba and EFS access",
-			"GroupName": { "Fn::Sub": "${ProjectNameParam}-samba-server" },
+			"GroupName": { "Fn::Sub": "0x4447_samba_ec2_${UniqueIdentifierParam}" },
+			"GroupDescription": "This group allows OpenVPN to accept incomming connection from the world, while allowing access to other crucial ports only within then local network.",
 			"VpcId": { "Ref": "VPCParam" },
 			"SecurityGroupEgress": [
 				{
@@ -18,29 +18,23 @@
 					"IpProtocol": "tcp",
 					"FromPort": 2049,
 					"ToPort": 2049,
-					"CidrIp": "0.0.0.0/0"
+					"Description": "EFS",
+					"CidrIp": { "Ref": "CidrParam" }
 				},
 				{
 					"IpProtocol": "tcp",
 					"FromPort": 445,
 					"ToPort": 445,
-					"CidrIp": "0.0.0.0/0"
+					"Description": "SMB",
+					"CidrIp": { "Ref": "CidrParam" }
 				}
 			],
 			"Tags": [
-                {
-                    "Key" : "Name",
-                    "Value" : "samba-server"
-                },
-                {
-                    "Key" : "Author",
-                    "Value" : "0x4447 LLC"
-                },
-                {
-                    "Key" : "Info",
-                    "Value" : "https://0x4447.com"
-                }
-            ]
+				{
+					"Key": "Name",
+					"Value": "0x4447_samba_ec2"
+				}
+			]
 		}
 	}
 }

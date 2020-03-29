@@ -2,14 +2,25 @@
     "EC2Instance": {
         "Type" : "AWS::EC2::Instance",
         "Properties" : {
-            "InstanceType" : { "Ref": "InstanceTypesParam" },
-            "ImageId": { "Fn::FindInMap": ["OSIDs", {"Ref": "AWS::Region"}, "64"] },
             "IamInstanceProfile": { "Ref": "ECSInstanceProfile" },
+			"ImageId": { "Fn::FindInMap": ["OSIDs", {"Ref": "AWS::Region"}, "64"] },
+			"InstanceType": { "Ref": "InstanceTypeParam" },
+			"KeyName": { "Ref" : "KeyNameParam" },			
+			"DisableApiTermination": false,
+			"NetworkInterfaces": [{
+				"AssociatePublicIpAddress" : true,
+				"DeviceIndex": "0",
+				"PrivateIpAddress": { "Ref" : "LocalIPAddressParam" },
+				"SubnetId": { "Ref" : "VPCSubnetsPrivateParam" },
+				"GroupSet": [
+					{ "Ref" : "EC2SecurityGroup" }
+				]
+			}],
             "UserData": { "Fn::Base64": { "Fn::Join": ["\n", [
 
-                "#!/usr/bin/env bash",
+				"#!/usr/bin/env bash",
 
-                { "Fn::Sub": "DRIVES=${DriveArrayParam}" },
+                { "Fn::Sub": "DRIVES=${DriveIdsParam}" },
 
                 "# Create .env file with an array of EBS and EFS drives.",
                 
@@ -17,26 +28,19 @@
                 "PERSISTENCE=($DRIVES)",
                 "EOF",
 
-                { "Fn::Sub": "sudo /opt/aws/bin/cfn-init -v --region ${AWS::Region} --stack ${AWS::StackName} --resource EC2Instance" },
+				{ "Fn::Sub": "sudo /opt/aws/bin/cfn-init -v --region ${AWS::Region} --stack ${AWS::StackName} --resource EC2Instance" },
 
-                { "Fn::Sub": "sudo /opt/aws/bin/cfn-signal -s true --region ${AWS::Region} --stack ${AWS::StackName} --resource EC2Instance" }
+				{ "Fn::Sub": "sudo /opt/aws/bin/cfn-signal -s true --region ${AWS::Region} --stack ${AWS::StackName} --resource EC2Instance" }
 
-            ]]}},
-            "NetworkInterfaces": [ {
-                "AssociatePublicIpAddress": "false",
-                "DeviceIndex": "0",
-                "GroupSet": [{ "Ref" : "EC2SecurityGroup" }],
-                "SubnetId": { "Ref" : "VPCSubnetsAPrivateParam" },
-                "PrivateIpAddress": { "Ref": "PrivateIpAddressParam" }
-            }],
+			]]}},
             "Tags": [
                 {
-                    "Key" : "Name",
-                    "Value" : { "Fn::Sub": "${AWS::StackName}" }
-                },
+					"Key": "Name",
+					"Value": { "Fn::Sub": "0x4447_samba_${UniqueIdentifierParam}" }
+				},
                 {
                     "Key" : "Description",
-                    "Value" : "Samba server to share multiple drives at once."
+                    "Value" : "Mount any AWS Drive in to a central place."
                 },
                 {
                     "Key" : "Author",
@@ -49,22 +53,57 @@
             ]
         },
         "Metadata": {
-            "AWS::CloudFormation::Init" : {
-                "config" : {
-                    "services": {
-                        "sysvinit": {
-                            "cfn-hup": {
-                                "enabled": true,
-                                "ensureRunning": true,
-                                "files": [
-                                    "/etc/cfn/cfn-hup.conf",
-                                    "/etc/cfn/hooks.d/cfn-auto-reloader.conf"
-                                ]
-                            }
-                        }
-                    }
-                }
-            }
-        }
+			"AWS::CloudFormation::Init" : {
+				"config" : {
+					"packages": {
+						"rpm": {
+							"cloudwatch-agent": "https://s3.amazonaws.com/amazoncloudwatch-agent/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm"
+						}
+					},
+					"files" : {
+						"/etc/cfn/cfn-hup.conf" : {
+							"mode"  : "000644",
+							"owner" : "root",
+							"group" : "root",
+							"content" : { "Fn::Join" : ["\n", [
+								"[main]",
+								{ "Fn::Sub": "stack=${AWS::StackId}" },
+								{ "Fn::Sub": "region=${AWS::Region}" }
+							]]}
+						},
+						"/etc/cfn/hooks.d/cfn-auto-reloader.conf" : {
+							"content" : { "Fn::Join" : ["\n", [
+								"[cfn-auto-reloader-hook]",
+								"triggers=post.update",
+								"path=Resources.EC2Instance.Metadata.AWS::CloudFormation::Init",
+								{ "Fn::Sub": "action=/opt/aws/bin/cfn-init -v --region ${AWS::Region} --stack ${AWS::StackName} --resource EC2Instance" }
+							]]}
+						},
+						"/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json" : {
+							"content" : { "Fn::Join" : ["\n", [
+								"{\r\n\t\"agent\": {\r\n\t\t\"metrics_collection_interval\": 300\r\n\t},\r\n\t\"metrics\": {\r\n\t\t\"metrics_collected\": {\r\n\t\t\t\"mem\": {\r\n\t\t\t\t\"measurement\": [\"available\", \"total\", \"used\"]\r\n\t\t\t},\r\n\t\t\t\"disk\": {\r\n                \"resources\": [\"\/\"],\r\n\t\t\t\t\"measurement\": [\"total\", \"used_percent\"]\r\n\t\t\t}\r\n\t\t},\r\n\t\t\"append_dimensions\": {\r\n\t\t\t\"ImageId\": \"${aws:ImageId}\",\r\n\t\t\t\"InstanceId\": \"${aws:InstanceId}\",\r\n\t\t\t\"InstanceType\": \"${aws:InstanceType}\",\r\n\t\t\t\"AutoScalingGroupName\": \"${aws:AutoScalingGroupName}\"\r\n\t\t},\r\n\t\t\"aggregation_dimensions\" : [[\"AutoScalingGroupName\"], [\"InstanceId\", \"InstanceType\"]]\r\n\t}\r\n}"
+							]]}
+						}
+					},
+					"commands": {
+						"run_cloudwatch_agent": {
+							"command": "sudo amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s"
+						}
+					},
+					"services": {
+						"sysvinit": {
+							"cfn-hup": {
+								"enabled": true,
+								"ensureRunning": true,
+								"files": [
+									"/etc/cfn/cfn-hup.conf",
+									"/etc/cfn/hooks.d/cfn-auto-reloader.conf"
+								]
+							}
+						}
+					}
+				}
+			}
+		}
     }
 }

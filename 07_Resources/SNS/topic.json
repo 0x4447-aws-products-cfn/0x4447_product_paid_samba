@@ -1,0 +1,15 @@
+{
+	"SNSTopic": {
+		"Type": "AWS::SNS::Topic",
+		"Properties": {
+			"DisplayName": { "Fn::Sub": "0x4447_samba_${UniqueIdentifierParam}" },
+			"TopicName": { "Fn::Sub": "0x4447_samba_${UniqueIdentifierParam}" },
+			"Tags": [
+				{
+					"Key": "Description",
+					"Value": "Send out messages about EC2 alarms that monitor the basic health of an instance."
+				}
+			]
+		}
+	}
+}

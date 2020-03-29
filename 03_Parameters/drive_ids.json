@@ -1,6 +1,6 @@
 {
-	"DriveArrayParam": {
-		"Description": "a Bash array of EFS or EBS drives (space spearated only!!!)",
-		"Type": "String"
+	"DriveIdsParam": {
+		"Description": "The ID of the EFS drive where your unique data will live.",
+        "Type": "String"
 	}
 }

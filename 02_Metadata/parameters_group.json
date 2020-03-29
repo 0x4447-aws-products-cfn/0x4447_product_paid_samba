@@ -1,0 +1,38 @@
+{
+	"AWS::CloudFormation::Interface" : {
+		"ParameterGroups": [
+			{
+				"Label" : { "default" : "Deployment" },
+				"Parameters" : [ "UniqueIdentifierParam" ]
+			},
+			{
+				"Label" : { "default" : "Access" },
+				"Parameters" : [ "KeyNameParam" ]
+			},
+			{
+				"Label" : { "default" : "EC2 Instance" },
+				"Parameters" : [ "InstanceTypeParam" ]
+			},
+			{
+				"Label" : { "default" : "Network" },
+				"Parameters" : [ 
+					"VPCParam", 
+					"VPCSubnetsPublicParam",
+					"CidrParam",
+					"ElasticIPParam",
+					"ElasticIPIDParam"
+				]
+			}
+		],
+		"ParameterLabels": {
+			"UniqueIdentifierParam": { "default" : "Unique Identifier" },			
+			"KeyNameParam": { "default" : "EC2 Private Key" },
+			"InstanceTypeParam": { "default" : "Instance Type" },
+			"VPCParam": { "default" : "VPC ID" },
+			"CidrParam": { "default" : "VPC CIDR" },
+			"VPCSubnetsPublicParam": { "default" : "Public Subnet" },
+			"ElasticIPParam": { "default" : "Elastic IP Address" },
+			"ElasticIPIDParam": { "default" : "Elastic IP ID" }
+		}
+	}
+}

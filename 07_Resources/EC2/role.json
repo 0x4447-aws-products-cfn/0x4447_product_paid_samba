@@ -2,7 +2,7 @@
 	"EC2Role": {
 		"Type": "AWS::IAM::Role",
 		"Properties": {
-			"RoleName": { "Fn::Sub": "${ProjectNameParam}-samba-server-EC2" },
+			"RoleName": { "Fn::Sub": "0x4447_samba_EC2_${UniqueIdentifierParam}" },
 			"AssumeRolePolicyDocument": {
 				"Version": "2012-10-17",
 				"Statement": [
@@ -14,7 +14,17 @@
 						"Action": "sts:AssumeRole"
 					}
 				]
-			}
+			},
+			"ManagedPolicyArns": [
+				"arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
+				"arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+			],
+			"Tags": [
+				{
+					"Key": "Name",
+					"Value": "0x4447_samba"
+				}
+			]
 		}
 	}
 }
