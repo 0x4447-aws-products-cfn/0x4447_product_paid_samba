@@ -2,7 +2,7 @@
 
 <img align="left" style="float: left; margin: 0 10px 0 0;" src="https://raw.githubusercontent.com/0x4447/0x4447_product_paid_samba/assets/product.png">
 
-We created this CloudFormation file to allow an easy and automated deployment process of our [custom Samba AMI product](https://aws.amazon.com/marketplace/pp/B084HF14KL?ref=_ptnr_social_github) - available in the [AWS Marketplace](https://aws.amazon.com/marketplace/seller-profile?id=80edcebf-11fb-4c36-a3f4-49eb40b518a3?ref=_ptnr_social_github). 
+We created this CloudFormation file to allow an easy and automated deployment process of our [custom Samba AMI product](https://aws.amazon.com/marketplace/pp/B084HF14KL?ref=_ptnr_social_github) - available in the [AWS Marketplace](https://aws.amazon.com/marketplace/seller-profile?id=80edcebf-11fb-4c36-a3f4-49eb40b518a3&ref=_ptnr_social_github). 
 
 You can find the full documentation of how to use our product here: [documentation.0x4447.com](https://documentation.0x4447.com/products/cloud/aws-marketplace/samba-server.html).
 
