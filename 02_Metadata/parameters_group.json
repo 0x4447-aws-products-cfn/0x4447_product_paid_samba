@@ -17,11 +17,19 @@
 				"Label" : { "default" : "Network" },
 				"Parameters" : [ 
 					"VPCParam", 
-					"VPCSubnetsPublicParam",
+					"VPCSubnetsPrivateParam",
 					"CidrParam",
 					"ElasticIPParam",
 					"ElasticIPIDParam"
 				]
+			},
+			{
+				"Label" : { "default" : "Resiliance" },
+				"Parameters" : [ "LocalIPAddressParam" ]
+			},
+			{
+				"Label" : { "default" : "Drives" },
+				"Parameters" : [ "DriveIdsParam" ]
 			}
 		],
 		"ParameterLabels": {
@@ -30,9 +38,11 @@
 			"InstanceTypeParam": { "default" : "Instance Type" },
 			"VPCParam": { "default" : "VPC ID" },
 			"CidrParam": { "default" : "VPC CIDR" },
-			"VPCSubnetsPublicParam": { "default" : "Public Subnet" },
+			"VPCSubnetsPrivateParam": { "default" : "Private Subnet" },
 			"ElasticIPParam": { "default" : "Elastic IP Address" },
-			"ElasticIPIDParam": { "default" : "Elastic IP ID" }
+			"ElasticIPIDParam": { "default" : "Elastic IP ID" },
+			"LocalIPAddressParam": { "default" : "Local IP" },
+			"DriveIdsParam": { "default" : "Drive ID's" }
 		}
 	}
 }

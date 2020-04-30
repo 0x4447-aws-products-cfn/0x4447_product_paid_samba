@@ -1,6 +1,6 @@
 {
 	"DriveIdsParam": {
-		"Description": "The ID of the EFS drive where your unique data will live.",
+		"Description": "Coma separated EFS or EBS drives IDs.",
         "Type": "String"
 	}
 }
