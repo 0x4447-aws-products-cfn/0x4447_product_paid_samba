@@ -1,0 +1,6 @@
+{
+	"DriveIdsParam": {
+		"Description": "Coma separated EBS drives IDs.",
+        "Type": "String"
+	}
+}

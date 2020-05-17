@@ -4,7 +4,7 @@
 		"Properties": {
 			"Path": "/",
 			"Roles": [ { "Ref": "EC2Role" } ],
-			"InstanceProfileName": { "Fn::Sub": "0x4447_samba_instance_profile_${UniqueIdentifierParam}" }
+			"InstanceProfileName": { "Fn::Sub": "0x4447_samba_instance_profile_${UniqueIdentifierParam}_${AWS::Region}" }
 		}
 	}
 }

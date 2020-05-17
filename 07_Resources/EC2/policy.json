@@ -1,0 +1,23 @@
+{
+	"EC2Policy": {
+		"Type": "AWS::IAM::Policy",
+		"Properties": {
+			"PolicyName": "Volumes",
+			"Roles": [ { "Ref": "EC2Role" } ],
+			"PolicyDocument": {
+				"Version": "2012-10-17",
+				"Statement": [
+					{
+						"Effect": "Allow",
+						"Action": [
+                            "ec2:AttachVolume",
+                            "ec2:DetachVolume",
+                            "ec2:DescribeVolumes"
+                        ],
+						"Resource": "*"
+					}
+				]
+			}
+		}
+	}
+}
