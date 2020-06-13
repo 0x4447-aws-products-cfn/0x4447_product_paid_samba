@@ -11,7 +11,16 @@
 			},
 			{
 				"Label" : { "default" : "EC2 Instance" },
-				"Parameters" : [ "InstanceTypeParam" ]
+				"Parameters" : [ 
+					"InstanceTypeParam", 
+					"HostnameParam" 
+				]
+			},
+			{
+				"Label" : { "default" : "EBS Drives" },
+				"Parameters" : [ 
+					"DriveIdsParam"
+				]
 			},
 			{
 				"Label" : { "default" : "Network" },
@@ -26,8 +35,13 @@
 			{
 				"Label" : { "default" : "Resiliance" },
 				"Parameters" : [ 
-					"LocalIPAddressParam",
-					"DriveIdsParam"
+					"LocalIPAddressParam"
+				 ]
+			},
+			{
+				"Label" : { "default" : "Reserved for internal debugging" },
+				"Parameters" : [ 
+					"CustomAMIIdParam"
 				 ]
 			}
 		],
@@ -41,7 +55,9 @@
 			"ElasticIPParam": { "default" : "Elastic IP Address" },
 			"ElasticIPIDParam": { "default" : "Elastic IP ID" },
 			"LocalIPAddressParam": { "default" : "Local IP" },
-			"DriveIdsParam": { "default" : "Drive ID's" }
+			"DriveIdsParam": { "default" : "Drive ID's" },
+			"CustomAMIIdParam": { "default" : "AMI ID" },
+			"HostnameParam": { "default" : "Instance Hostname" }
 		}
 	}
 }

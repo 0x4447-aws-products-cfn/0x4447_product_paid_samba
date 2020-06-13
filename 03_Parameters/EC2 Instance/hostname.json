@@ -1,0 +1,6 @@
+{
+	"HostnameParam": {
+		"Description": "Instance hostname",
+        "Type": "String"
+	}
+}

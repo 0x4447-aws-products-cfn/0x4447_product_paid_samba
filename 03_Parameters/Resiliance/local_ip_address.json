@@ -1,6 +1,6 @@
 {
 	"LocalIPAddressParam": {
-		"Description": "The IP address to be used to tell the EC2 Instacne to use for the fixed public IP.",
+		"Description": "The local IP of the instance, for example: 10.0.1.30",
         "Type": "String"
 	}
 }
