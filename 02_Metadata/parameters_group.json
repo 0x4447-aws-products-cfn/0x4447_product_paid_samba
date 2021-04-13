@@ -37,12 +37,6 @@
 				"Parameters" : [ 
 					"LocalIPAddressParam"
 				 ]
-			},
-			{
-				"Label" : { "default" : "Reserved for internal debugging" },
-				"Parameters" : [ 
-					"CustomAMIIdParam"
-				 ]
 			}
 		],
 		"ParameterLabels": {
@@ -56,7 +50,6 @@
 			"ElasticIPIDParam": { "default" : "Elastic IP ID" },
 			"LocalIPAddressParam": { "default" : "Local IP" },
 			"DriveIdsParam": { "default" : "Drive ID's" },
-			"CustomAMIIdParam": { "default" : "AMI ID" },
 			"HostnameParam": { "default" : "Instance Hostname" }
 		}
 	}
