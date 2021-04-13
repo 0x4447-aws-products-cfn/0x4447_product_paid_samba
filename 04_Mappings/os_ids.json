@@ -1,52 +1,55 @@
 {
     "OSIDs": {
         "us-east-2": {
-            "64": "ami-099aa88cf272f6953"
+            "64": "ami-0b24477e5a9d2b377"
         },
         "us-east-1": {
-            "64": "ami-075fc18564493318c"
+            "64": "ami-0f8dbebeb9a0220b2"
         },
         "us-west-1": {
-            "64": "ami-0c403c4c14d0e9fab"
+            "64": "ami-0d85dc1d459bcedca"
         },
         "us-west-2": {
-            "64": "ami-0ffb541cd66a14dd3"
+            "64": "ami-0ff7f357416cc026b"
         },
         "ap-south-1": {
-            "64": "ami-013a42ed3640e0373"
+            "64": "ami-0605c97d9e566b2fd"
+        },
+        "ap-northeast-3": {
+            "64": "ami-0d91cb6b1da3e08a1"
         },
         "ap-northeast-2": {
-            "64": "ami-05ff7a076e30228d9"
+            "64": "ami-019f33a349ffd9be5"
         },
         "ap-southeast-1": {
-            "64": "ami-07a2c87e1ccc533ef"
+            "64": "ami-0765e1b61295b849b"
         },
         "ap-southeast-2": {
-            "64": "ami-04894a9201da1f5b6"
+            "64": "ami-073c8bbb7a285fc49"
         },
         "ap-northeast-1": {
-            "64": "ami-065e155fb77aec67a"
+            "64": "ami-0a5f2f1b7fe9a21ca"
         },
         "ca-central-1": {
-            "64": "ami-0ddd54749df43404e"
+            "64": "ami-07e16bac4493e8de7"
         },
         "eu-central-1": {
-            "64": "ami-01860703eb260fe65"
+            "64": "ami-002e49ea2939cc6d5"
         },
         "eu-west-1": {
-            "64": "ami-004ed666732c27e36"
+            "64": "ami-0297b3453845097a6"
         },
         "eu-west-2": {
-            "64": "ami-0676f288504fdbe01"
+            "64": "ami-0d6241059f484640a"
         },
         "eu-west-3": {
-            "64": "ami-0bfc62eb6bd24595c"
+            "64": "ami-06df4dc204f376704"
         },
         "eu-north-1": {
-            "64": "ami-05084bb9a72300042"
+            "64": "ami-04f2af652e51c19c0"
         },
         "sa-east-1": {
-            "64": "ami-0ca84cd176c177f99"
+            "64": "ami-0caddf519f1f433a2"
         }
     }
 }
