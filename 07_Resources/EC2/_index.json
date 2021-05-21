@@ -5,8 +5,8 @@
             "IamInstanceProfile": { "Ref": "ECSInstanceProfile" },
 			"ImageId": { "Fn::FindInMap": ["OSIDs", {"Ref": "AWS::Region"}, "64"] },
 			"InstanceType": { "Ref": "InstanceTypeParam" },
-			"KeyName": { "Ref" : "KeyNameParam" },			
-			"DisableApiTermination": { "Fn::If": [ "isCustomAMI", false, true ] },
+			"KeyName": { "Ref" : "KeyNameParam" },
+			"DisableApiTermination": "true",
 			"NetworkInterfaces": [{
 				"AssociatePublicIpAddress" : true,
 				"DeviceIndex": "0",
@@ -24,7 +24,7 @@
                 { "Fn::Sub": "NAME=${HostnameParam}" },
 
                 "# Create .env file with an array of EBS and EFS drives.",
-				
+
 				"cat << EOF > /home/ec2-user/.env",
 				"PERSISTENCE=$DRIVES",
 				"HOSTNAME=$NAME",
