@@ -20,15 +20,9 @@
 
 				"#!/usr/bin/env bash",
 
-                { "Fn::Sub": "DRIVES=${DriveIdsParam}" },
-                { "Fn::Sub": "NAME=${HostnameParam}" },
+                { "Fn::Sub": "EBS_ID=${DriveIdsParam}" },
 
-                "# Create .env file with an array of EBS and EFS drives.",
-
-				"cat << EOF > /home/ec2-user/.env",
-				"PERSISTENCE=$DRIVES",
-				"HOSTNAME=$NAME",
-				"EOF",
+                "echo DRIVES=$EBS_ID >> /home/ec2-user/.env",
 
 				{ "Fn::Sub": "sudo /opt/aws/bin/cfn-init -v --region ${AWS::Region} --stack ${AWS::StackName} --resource EC2Instance" },
 
