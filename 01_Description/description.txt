@@ -1,1 +1,1 @@
-A Samba server created to mount countless and multiple drives.
+Samba Server - Ready to Go - product of 0x4447
