@@ -6,19 +6,10 @@
 				"Parameters" : [ "UniqueIdentifierParam" ]
 			},
 			{
-				"Label" : { "default" : "Access" },
-				"Parameters" : [ "KeyNameParam" ]
-			},
-			{
 				"Label" : { "default" : "EC2 Instance" },
 				"Parameters" : [
-					"InstanceTypeParam"
-				]
-			},
-			{
-				"Label" : { "default" : "EBS Drives" },
-				"Parameters" : [
-					"DriveIdsParam"
+					"InstanceTypeParam",
+					"KeyNameParam"
 				]
 			},
 			{
@@ -26,29 +17,35 @@
 				"Parameters" : [
 					"VPCParam",
 					"VPCSubnetsPrivateParam",
-					"CidrParam",
-					"ElasticIPParam",
-					"ElasticIPIDParam"
+					"CidrParam"
 				]
 			},
 			{
-				"Label" : { "default" : "Resiliance" },
+				"Label" : { "default" : "Monitoring" },
+				"Parameters" : [ "EmailParam" ]
+			},
+			{
+				"Label" : { "default" : "Product Configuration" },
 				"Parameters" : [
-					"LocalIPAddressParam"
-				 ]
+					"LocalIPAddressParam",
+					"DriveIdsParam"
+				]
 			}
 		],
 		"ParameterLabels": {
 			"UniqueIdentifierParam": { "default" : "Unique Identifier" },
-			"KeyNameParam": { "default" : "EC2 Private Key" },
+
 			"InstanceTypeParam": { "default" : "Instance Type" },
+			"KeyNameParam": { "default" : "EC2 Private Key" },
+
 			"VPCParam": { "default" : "VPC ID" },
-			"CidrParam": { "default" : "VPC CIDR" },
 			"VPCSubnetsPrivateParam": { "default" : "Private Subnet" },
-			"ElasticIPParam": { "default" : "Elastic IP Address" },
-			"ElasticIPIDParam": { "default" : "Elastic IP ID" },
-			"LocalIPAddressParam": { "default" : "Local IP" },
-			"DriveIdsParam": { "default" : "Drive ID's" }
+			"CidrParam": { "default" : "VPC CIDR" },
+
+			"EmailParam": { "default" : "Email" },
+
+			"DriveIdsParam": { "default" : "Drive ID's" },
+			"LocalIPAddressParam": { "default" : "Local IP" }
 		}
 	}
 }
