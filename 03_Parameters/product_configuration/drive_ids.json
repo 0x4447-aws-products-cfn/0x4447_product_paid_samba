@@ -1,6 +1,6 @@
 {
 	"DriveIdsParam": {
-		"Description": "Coma separated EBS drives IDs. >>> NO SPACES ALOWED <<<",
+		"Description": "Comma separated EBS drives IDs. >>> NO SPACES ALLOWED <<<",
         "Type": "String"
 	}
 }
