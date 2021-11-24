@@ -6,7 +6,7 @@
 			"ImageId": "resolve:ssm:/aws/service/marketplace/prod-wm3klyzxf47ja/latest",
 			"InstanceType": { "Ref": "InstanceTypeParam" },
 			"KeyName": { "Ref" : "KeyNameParam" },
-			"DisableApiTermination": true,
+			"DisableApiTermination": false,
 			"NetworkInterfaces": [{
 				"AssociatePublicIpAddress" : true,
 				"DeviceIndex": "0",
