@@ -24,7 +24,27 @@
 					"Key": "Name",
 					"Value": "0x4447_samba"
 				}
-			]
+			],
+            "Policies": [
+                {
+                    "PolicyName": "cloudwatch_logs_access",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "logs:CreateLogGroup",
+                                    "logs:CreateLogStream",
+                                    "logs:PutLogEvents",
+                                    "logs:DescribeLogStreams"
+                                ],
+                                "Resource": "*"
+                            }
+                        ]
+                    }
+                }
+            ]
 		}
 	}
 }
