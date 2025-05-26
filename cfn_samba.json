@@ -1,0 +1,748 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Description": "Samba Server - Ready to Go ::: a product from the AWS Marketplace by 0x4447, documentation at: https://documentation.0x4447.com",
+	"Metadata": {
+		"AWS::CloudFormation::Interface": {
+			"ParameterGroups": [
+				{
+					"Label": {
+						"default": "Deployment"
+					},
+					"Parameters": [
+						"UniqueIdentifierParam"
+					]
+				},
+				{
+					"Label": {
+						"default": "EC2 Instance"
+					},
+					"Parameters": [
+						"InstanceTypeParam",
+						"KeyNameParam"
+					]
+				},
+				{
+					"Label": {
+						"default": "Network"
+					},
+					"Parameters": [
+						"VPCParam",
+						"VPCSubnetsPrivateParam",
+						"CidrParam"
+					]
+				},
+				{
+					"Label": {
+						"default": "Monitoring"
+					},
+					"Parameters": [
+						"EmailParam"
+					]
+				},
+				{
+					"Label": {
+						"default": "Product Configuration"
+					},
+					"Parameters": [
+						"LocalIPAddressParam",
+						"DriveIdsParam"
+					]
+				}
+			],
+			"ParameterLabels": {
+				"UniqueIdentifierParam": {
+					"default": "Unique Identifier"
+				},
+				"InstanceTypeParam": {
+					"default": "Instance Type"
+				},
+				"KeyNameParam": {
+					"default": "EC2 Private Key"
+				},
+				"VPCParam": {
+					"default": "VPC ID"
+				},
+				"VPCSubnetsPrivateParam": {
+					"default": "Private Subnet"
+				},
+				"CidrParam": {
+					"default": "VPC CIDR"
+				},
+				"EmailParam": {
+					"default": "Email"
+				},
+				"DriveIdsParam": {
+					"default": "Drive ID's"
+				},
+				"LocalIPAddressParam": {
+					"default": "Local IP"
+				}
+			}
+		}
+	},
+	"Parameters": {
+		"UniqueIdentifierParam": {
+			"Description": "Provide a unique name for this deployment. We will use it to create unique names for each resource to allow you multiple deployments of the same product.",
+			"Type": "String"
+		},
+		"EmailParam": {
+			"Description": "Provide an email where to receive CloudWatch Alarms. WARNING: AWS will send a confirmation email, you have to accept it, otherwise AWS won't be able to send you alarm notifications.",
+			"Type": "String"
+		},
+		"CidrParam": {
+			"Description": "The CIDR block off the selected VPC. For example 10.0.0.0/16, 172.31.0.0/16, etc. We use this information for the Security Groups and other places that require routing configuration.",
+			"Type": "String"
+		},
+		"VPCSubnetsPrivateParam": {
+			"Description": "The ID of the subnet where the instance should be deployed in. WARNING: not all subnets can accommodate all EC2 instances types <<< AND >>> THE SUBNET NEEDS TO BE IN THE SAME AZ AS THE EBS DRIVE <<< . >>>",
+			"Type": "AWS::EC2::Subnet::Id"
+		},
+		"VPCParam": {
+			"Description": "Select the VPC where to deploy the product.",
+			"Type": "AWS::EC2::VPC::Id"
+		},
+		"InstanceTypeParam": {
+			"Type": "String",
+			"Default": "t3a.nano",
+			"Description": "Select the instance type that fits your needs. By default we have set the cheapest option for cost savings.",
+			"AllowedValues": [
+				"t2.nano",
+				"t2.micro",
+				"t2.small",
+				"t2.medium",
+				"t2.large",
+				"t2.xlarge",
+				"t2.2xlarge",
+				"t3.nano",
+				"t3.micro",
+				"t3.small",
+				"t3.medium",
+				"t3.large",
+				"t3.xlarge",
+				"t3.2xlarge",
+				"t3a.nano",
+				"t3a.micro",
+				"t3a.small",
+				"t3a.medium",
+				"t3a.large",
+				"t3a.xlarge",
+				"t3a.2xlarge",
+				"m3.medium",
+				"m3.large",
+				"m3.xlarge",
+				"m3.2xlarge",
+				"m4.large",
+				"m4.xlarge",
+				"m4.2xlarge",
+				"m4.4xlarge",
+				"m4.10xlarge",
+				"m4.16xlarge",
+				"m5.large",
+				"m5.xlarge",
+				"m5.2xlarge",
+				"m5.4xlarge",
+				"m5.8xlarge",
+				"m5.12xlarge",
+				"m5.16xlarge",
+				"m5.24xlarge",
+				"m5.metal",
+				"m5a.large",
+				"m5a.xlarge",
+				"m5a.2xlarge",
+				"m5a.4xlarge",
+				"m5a.8xlarge",
+				"m5a.12xlarge",
+				"m5a.16xlarge",
+				"m5a.24xlarge",
+				"m5ad.large",
+				"m5ad.xlarge",
+				"m5ad.2xlarge",
+				"m5ad.4xlarge",
+				"m5ad.12xlarge",
+				"m5ad.24xlarge",
+				"m5d.large",
+				"m5d.xlarge",
+				"m5d.2xlarge",
+				"m5d.4xlarge",
+				"m5d.8xlarge",
+				"m5d.12xlarge",
+				"m5d.16xlarge",
+				"m5d.24xlarge",
+				"m5d.metal"
+			]
+		},
+		"KeyNameParam": {
+			"Description": "The private key to be used to access the server over SSH for remote management.",
+			"Type": "AWS::EC2::KeyPair::KeyName"
+		},
+		"DriveIdsParam": {
+			"Description": "Comma separated EBS drives IDs. >>> NO SPACES ALLOWED <<<",
+			"Type": "String"
+		},
+		"LocalIPAddressParam": {
+			"Description": "A local IP (of to the same subnet selected above) to be used by the instance. The IP will stay the same even after a reboot or stop/start action.",
+			"Type": "String"
+		}
+	},
+	"Mappings": {
+		"OSIDs": {
+			"af-south-1": {
+				"64": "ami-02a1d760bc05e3de7"
+			},
+			"ap-east-1": {
+				"64": "ami-0ceef6e9871796033"
+			},
+			"ap-northeast-1": {
+				"64": "ami-066852d8c6a01d150"
+			},
+			"ap-northeast-2": {
+				"64": "ami-00a5865148146220f"
+			},
+			"ap-northeast-3": {
+				"64": "ami-07061d77c105c58fa"
+			},
+			"ap-south-1": {
+				"64": "ami-04c888037abd37a94"
+			},
+			"ap-southeast-1": {
+				"64": "ami-0c184bdacd3693f36"
+			},
+			"ap-southeast-2": {
+				"64": "ami-04425005b53f313a4"
+			},
+			"ca-central-1": {
+				"64": "ami-00d7876cade4e7ff4"
+			},
+			"eu-central-1": {
+				"64": "ami-043019811ceef1f8e"
+			},
+			"eu-north-1": {
+				"64": "ami-02102afdb7f7367bc"
+			},
+			"eu-south-1": {
+				"64": "ami-0562d20571068fc42"
+			},
+			"eu-west-1": {
+				"64": "ami-056a8c4aa7cd69d86"
+			},
+			"eu-west-2": {
+				"64": "ami-0623d34aeba10c46f"
+			},
+			"eu-west-3": {
+				"64": "ami-00dbf88935b8a3c47"
+			},
+			"me-south-1": {
+				"64": "ami-04e93da758b022df0"
+			},
+			"sa-east-1": {
+				"64": "ami-06c05c76ebb3561f0"
+			},
+			"us-east-1": {
+				"64": "ami-0d33bebc8b7d4706c"
+			},
+			"us-east-2": {
+				"64": "ami-0fd77594c4177b28a"
+			},
+			"us-west-1": {
+				"64": "ami-050bcad1b4964ce37"
+			},
+			"us-west-2": {
+				"64": "ami-026143405ef0d3fa4"
+			}
+		}
+	},
+	"Resources": {
+		"EC2Instance": {
+			"Type": "AWS::EC2::Instance",
+			"Properties": {
+				"IamInstanceProfile": {
+					"Ref": "ECSInstanceProfile"
+				},
+				"ImageId": {
+					"Fn::FindInMap": [
+						"OSIDs",
+						{
+							"Ref": "AWS::Region"
+						},
+						"64"
+					]
+				},
+				"InstanceType": {
+					"Ref": "InstanceTypeParam"
+				},
+				"KeyName": {
+					"Ref": "KeyNameParam"
+				},
+				"DisableApiTermination": false,
+				"NetworkInterfaces": [
+					{
+						"AssociatePublicIpAddress": true,
+						"DeviceIndex": "0",
+						"PrivateIpAddress": {
+							"Ref": "LocalIPAddressParam"
+						},
+						"SubnetId": {
+							"Ref": "VPCSubnetsPrivateParam"
+						},
+						"GroupSet": [
+							{
+								"Ref": "EC2SecurityGroup"
+							}
+						]
+					}
+				],
+				"UserData": {
+					"Fn::Base64": {
+						"Fn::Join": [
+							"\n",
+							[
+								"#!/usr/bin/env bash",
+								{
+									"Fn::Sub": "EBS_ID=${DriveIdsParam}"
+								},
+								"echo DRIVES=$EBS_ID >> /home/ec2-user/.env",
+								{
+									"Fn::Sub": "sudo /opt/aws/bin/cfn-init -v --region ${AWS::Region} --stack ${AWS::StackName} --resource EC2Instance"
+								},
+								{
+									"Fn::Sub": "sudo /opt/aws/bin/cfn-signal -s true --region ${AWS::Region} --stack ${AWS::StackName} --resource EC2Instance"
+								}
+							]
+						]
+					}
+				},
+				"Tags": [
+					{
+						"Key": "Name",
+						"Value": {
+							"Fn::Sub": "0x4447_samba_${UniqueIdentifierParam}"
+						}
+					},
+					{
+						"Key": "Description",
+						"Value": "Mount any AWS Drive in to a central place."
+					},
+					{
+						"Key": "Author",
+						"Value": "0x4447 LLC"
+					},
+					{
+						"Key": "Info",
+						"Value": "https://0x4447.com"
+					}
+				]
+			},
+			"Metadata": {
+				"AWS::CloudFormation::Init": {
+					"config": {
+						"files": {
+							"/etc/cfn/cfn-hup.conf": {
+								"mode": "000644",
+								"owner": "root",
+								"group": "root",
+								"content": {
+									"Fn::Join": [
+										"\n",
+										[
+											"[main]",
+											{
+												"Fn::Sub": "stack=${AWS::StackId}"
+											},
+											{
+												"Fn::Sub": "region=${AWS::Region}"
+											}
+										]
+									]
+								}
+							},
+							"/etc/cfn/hooks.d/cfn-auto-reloader.conf": {
+								"content": {
+									"Fn::Join": [
+										"\n",
+										[
+											"[cfn-auto-reloader-hook]",
+											"triggers=post.update",
+											"path=Resources.EC2Instance.Metadata.AWS::CloudFormation::Init",
+											{
+												"Fn::Sub": "action=/opt/aws/bin/cfn-init -v --region ${AWS::Region} --stack ${AWS::StackName} --resource EC2Instance"
+											}
+										]
+									]
+								}
+							},
+							"/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json": {
+								"mode": "000644",
+								"owner": "root",
+								"group": "root",
+								"content": {
+									"Fn::Sub": [
+										"{\n    \"agent\": {\n        \"metrics_collection_interval\": 300\n    },\n    \"metrics\": {\n        \"namespace\": \"${NameSpace}\",\n        \"metrics_collected\": {\n            \"mem\": {\n                \"measurement\": [\"total\", \"available\", \"used\"]\n            },\n            \"disk\": {\n                \"resources\": [\"/\"],\n                \"measurement\": [\"total\", \"free\", \"used\"]\n            },\n            \"processes\": {\n                \"measurement\": [\"total\", \"running\", \"sleeping\", \"stopped\", \"zombies\"]\n            }\n        }\n    },\n    \"logs\": {\n        \"log_stream_name\": \"default\",\n        \"force_flush_interval\": 15,\n        \"logs_collected\": {\n            \"files\": {\n                \"collect_list\": [\n                    {\n                        \"file_path\": \"/var/log/messages\",\n                        \"log_group_name\": \"/0x4447/instance/${ShortName}/logs/${UniqueIdentifierParam}\",\n                        \"log_stream_name\": \"/var/log/messages\",\n                        \"timezone\": \"UTC\"\n                    },\n                    {\n                        \"file_path\": \"/var/log/secure\",\n                        \"log_group_name\": \"/0x4447/instance/${ShortName}/logs/${UniqueIdentifierParam}\",\n                        \"log_stream_name\": \"/var/log/secure\",\n                        \"timezone\": \"UTC\"\n                    }\n                ]\n            }\n        }\n    }\n}",
+										{
+											"NameSpace": {
+												"Fn::Sub": "0x4447_samba_${UniqueIdentifierParam}"
+											},
+											"ShortName": "samba",
+											"UniqueIdentifierParam": {
+												"Ref": "UniqueIdentifierParam"
+											}
+										}
+									]
+								}
+							}
+						},
+						"commands": {
+							"run_cloudwatch_agent": {
+								"command": "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s"
+							}
+						},
+						"services": {
+							"sysvinit": {
+								"cfn-hup": {
+									"enabled": true,
+									"ensureRunning": true,
+									"files": [
+										"/etc/cfn/cfn-hup.conf",
+										"/etc/cfn/hooks.d/cfn-auto-reloader.conf"
+									]
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"ECSInstanceProfile": {
+			"Type": "AWS::IAM::InstanceProfile",
+			"Properties": {
+				"Path": "/",
+				"Roles": [
+					{
+						"Ref": "EC2Role"
+					}
+				],
+				"InstanceProfileName": {
+					"Fn::Sub": "0x4447_samba_instance_profile_${UniqueIdentifierParam}_${AWS::Region}"
+				}
+			}
+		},
+		"EC2Policy": {
+			"Type": "AWS::IAM::Policy",
+			"Properties": {
+				"PolicyName": "Volumes",
+				"Roles": [
+					{
+						"Ref": "EC2Role"
+					}
+				],
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Action": [
+								"ec2:AttachVolume",
+								"ec2:DetachVolume",
+								"ec2:DescribeVolumes"
+							],
+							"Resource": "*"
+						}
+					]
+				}
+			}
+		},
+		"EC2Role": {
+			"Type": "AWS::IAM::Role",
+			"Properties": {
+				"RoleName": {
+					"Fn::Sub": "0x4447_samba_EC2_${UniqueIdentifierParam}"
+				},
+				"Description": "Grants EC2 permissions for logging, SSM access, and KMS decryption.",
+				"AssumeRolePolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Principal": {
+								"Service": "ec2.amazonaws.com"
+							},
+							"Action": "sts:AssumeRole"
+						}
+					]
+				},
+				"ManagedPolicyArns": [
+					"arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
+					"arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+				],
+				"Tags": [
+					{
+						"Key": "Name",
+						"Value": "0x4447_samba"
+					}
+				],
+				"Policies": [
+					{
+						"PolicyName": "cloudwatch_logs_access",
+						"PolicyDocument": {
+							"Version": "2012-10-17",
+							"Statement": [
+								{
+									"Effect": "Allow",
+									"Action": [
+										"logs:CreateLogGroup",
+										"logs:CreateLogStream",
+										"logs:PutLogEvents",
+										"logs:DescribeLogStreams"
+									],
+									"Resource": "*"
+								}
+							]
+						}
+					},
+					{
+						"PolicyName": "kms_decrypt",
+						"PolicyDocument": {
+							"Version": "2012-10-17",
+							"Statement": [
+								{
+									"Effect": "Allow",
+									"Action": "kms:Decrypt",
+									"Resource": "*"
+								}
+							]
+						}
+					}
+				]
+			}
+		},
+		"EC2SecurityGroup": {
+			"Type": "AWS::EC2::SecurityGroup",
+			"Properties": {
+				"GroupName": {
+					"Fn::Sub": "0x4447_samba_ec2_${UniqueIdentifierParam}"
+				},
+				"GroupDescription": "This group allows OpenVPN to accept incomming connection from the world, while allowing access to other crucial ports only within then local network.",
+				"VpcId": {
+					"Ref": "VPCParam"
+				},
+				"SecurityGroupEgress": [
+					{
+						"IpProtocol": "-1",
+						"FromPort": -1,
+						"ToPort": -1,
+						"CidrIp": "0.0.0.0/0"
+					}
+				],
+				"SecurityGroupIngress": [
+					{
+						"IpProtocol": "tcp",
+						"FromPort": 445,
+						"ToPort": 445,
+						"Description": "SMB",
+						"CidrIp": {
+							"Ref": "CidrParam"
+						}
+					}
+				],
+				"Tags": [
+					{
+						"Key": "Name",
+						"Value": "0x4447_samba_ec2"
+					}
+				]
+			}
+		},
+		"SNSTopicPolicy": {
+			"Type": "AWS::SNS::TopicPolicy",
+			"Properties": {
+				"Topics": [
+					{
+						"Ref": "SNSTopic"
+					}
+				],
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Principal": {
+								"Service": "events.amazonaws.com"
+							},
+							"Action": "sns:Publish",
+							"Resource": {
+								"Ref": "SNSTopic"
+							}
+						}
+					]
+				}
+			}
+		},
+		"SNSSubscription": {
+			"Type": "AWS::SNS::Subscription",
+			"Properties": {
+				"Endpoint": {
+					"Ref": "EmailParam"
+				},
+				"Protocol": "email",
+				"TopicArn": {
+					"Ref": "SNSTopic"
+				}
+			}
+		},
+		"SNSTopic": {
+			"Type": "AWS::SNS::Topic",
+			"Properties": {
+				"DisplayName": {
+					"Fn::Sub": "0x4447_samba_${UniqueIdentifierParam}"
+				},
+				"TopicName": {
+					"Fn::Sub": "0x4447_samba_${UniqueIdentifierParam}"
+				},
+				"Tags": [
+					{
+						"Key": "Description",
+						"Value": "Send out messages about EC2 alarms that monitor the basic health of an instance."
+					}
+				]
+			}
+		},
+		"CPUBurstAlarm": {
+			"Type": "AWS::CloudWatch::Alarm",
+			"Properties": {
+				"AlarmName": {
+					"Fn::Sub": "0x4447_samba_${UniqueIdentifierParam}_cpu_burst"
+				},
+				"AlarmDescription": "Track CPU Burst utilization.",
+				"TreatMissingData": "notBreaching",
+				"ActionsEnabled": true,
+				"AlarmActions": [
+					{
+						"Ref": "SNSTopic"
+					}
+				],
+				"ComparisonOperator": "GreaterThanOrEqualToThreshold",
+				"EvaluationPeriods": 1,
+				"Unit": "Count",
+				"Period": 300,
+				"Threshold": 100,
+				"Namespace": "AWS/EC2",
+				"MetricName": "CPUSurplusCreditBalance",
+				"Statistic": "Average",
+				"Dimensions": [
+					{
+						"Name": "InstanceId",
+						"Value": {
+							"Ref": "EC2Instance"
+						}
+					}
+				]
+			}
+		},
+		"CPULoadAlarm": {
+			"Type": "AWS::CloudWatch::Alarm",
+			"Properties": {
+				"AlarmName": {
+					"Fn::Sub": "0x4447_samba_${UniqueIdentifierParam}_cpu_load"
+				},
+				"AlarmDescription": "Track EC2 CPU utilization.",
+				"TreatMissingData": "notBreaching",
+				"ActionsEnabled": true,
+				"AlarmActions": [
+					{
+						"Ref": "SNSTopic"
+					}
+				],
+				"ComparisonOperator": "GreaterThanOrEqualToThreshold",
+				"EvaluationPeriods": 2,
+				"Period": 120,
+				"Threshold": 90,
+				"Namespace": "AWS/EC2",
+				"MetricName": "CPUUtilization",
+				"Statistic": "Average",
+				"Dimensions": [
+					{
+						"Name": "InstanceId",
+						"Value": {
+							"Ref": "EC2Instance"
+						}
+					}
+				]
+			}
+		},
+		"EC2InstanceRecoveryAlarm": {
+			"Type": "AWS::CloudWatch::Alarm",
+			"Properties": {
+				"AlarmName": {
+					"Fn::Sub": "0x4447_samba_${UniqueIdentifierParam}_ec2_recovery"
+				},
+				"AlarmDescription": "Recover the Instance if there is a Hardware failire within AWS.",
+				"Namespace": "AWS/EC2",
+				"MetricName": "StatusCheckFailed_System",
+				"Statistic": "Minimum",
+				"Period": "60",
+				"EvaluationPeriods": "2",
+				"ComparisonOperator": "GreaterThanThreshold",
+				"Threshold": "0",
+				"AlarmActions": [
+					{
+						"Ref": "SNSTopic"
+					},
+					{
+						"Fn::Sub": "arn:aws:automate:${AWS::Region}:ec2:recover"
+					}
+				],
+				"Dimensions": [
+					{
+						"Name": "InstanceId",
+						"Value": {
+							"Ref": "EC2Instance"
+						}
+					}
+				]
+			}
+		},
+		"CloudWatchDashboardInstances": {
+			"Type": "AWS::CloudWatch::Dashboard",
+			"Properties": {
+				"DashboardName": {
+					"Fn::Sub": "0x4447_samba_${UniqueIdentifierParam}_${AWS::Region}"
+				},
+				"DashboardBody": {
+					"Fn::Sub": [
+						"{\n    \"widgets\": [\n        {\n            \"height\": 3,\n            \"width\": 20,\n            \"y\": 0,\n            \"x\": 4,\n            \"type\": \"metric\",\n            \"properties\": {\n                \"metrics\": [\n                    [ \"AWS/EC2\", \"CPUUtilization\", \"InstanceId\", \"${InstanceId}\" ]\n                ],\n                \"view\": \"timeSeries\",\n                \"stacked\": false,\n                \"region\": \"${Region}\",\n                \"title\": \"CPU\",\n                \"period\": 300,\n                \"stat\": \"Average\"\n            }\n        },\n        {\n            \"height\": 3,\n            \"width\": 17,\n            \"y\": 3,\n            \"x\": 7,\n            \"type\": \"metric\",\n            \"properties\": {\n                \"view\": \"timeSeries\",\n                \"stacked\": false,\n                \"metrics\": [\n                    [ \"AWS/EC2\", \"NetworkIn\", \"InstanceId\", \"${InstanceId}\" ],\n                    [ \".\", \"NetworkOut\", \".\", \".\" ]\n                ],\n                \"region\": \"${Region}\",\n                \"title\": \"Network\"\n            }\n        },\n        {\n            \"height\": 3,\n            \"width\": 14,\n            \"y\": 6,\n            \"x\": 10,\n            \"type\": \"metric\",\n            \"properties\": {\n                \"metrics\": [\n                    [ \"AWS/EC2\", \"CPUCreditBalance\", \"InstanceId\", \"${InstanceId}\", { \"yAxis\": \"right\" } ],\n                    [ \".\", \"CPUSurplusCreditsCharged\", \".\", \".\" ],\n                    [ \".\", \"CPUCreditUsage\", \".\", \".\" ]\n                ],\n                \"view\": \"timeSeries\",\n                \"stacked\": false,\n                \"region\": \"${Region}\",\n                \"stat\": \"Average\",\n                \"period\": 300,\n                \"title\": \"CPU Credit\"\n            }\n        },\n        {\n            \"height\": 3,\n            \"width\": 14,\n            \"y\": 9,\n            \"x\": 10,\n            \"type\": \"metric\",\n            \"properties\": {\n                \"metrics\": [\n                    [ \"${NameSpace}\", \"mem_used\", \"host\", \"${PrivateDnsName}\" ],\n                    [ \".\", \"mem_available\", \".\", \".\" ]\n                ],\n                \"view\": \"timeSeries\",\n                \"stacked\": false,\n                \"region\": \"${Region}\",\n                \"period\": 300,\n                \"stat\": \"Average\",\n                \"title\": \"RAM\"\n            }\n        },\n        {\n            \"height\": 3,\n            \"width\": 10,\n            \"y\": 9,\n            \"x\": 0,\n            \"type\": \"metric\",\n            \"properties\": {\n                \"metrics\": [\n                    [ \"${NameSpace}\", \"mem_total\", \"host\", \"${PrivateDnsName}\" ],\n                    [ \".\", \"mem_used\", \".\", \".\" ],\n                    [ \".\", \"mem_available\", \".\", \".\" ]\n                ],\n                \"view\": \"singleValue\",\n                \"stacked\": false,\n                \"region\": \"${Region}\",\n                \"period\": 300,\n                \"stat\": \"Average\",\n                \"singleValueFullPrecision\": false,\n                \"title\": \"RAM\"\n            }\n        },\n        {\n            \"height\": 3,\n            \"width\": 7,\n            \"y\": 15,\n            \"x\": 17,\n            \"type\": \"metric\",\n            \"properties\": {\n                \"view\": \"timeSeries\",\n                \"stacked\": false,\n                \"metrics\": [\n                    [ \"${NameSpace}\", \"processes_running\", \"host\", \"${PrivateDnsName}\" ],\n                    [ \".\", \"processes_sleeping\", \".\", \".\" ],\n                    [ \".\", \"processes_stopped\", \".\", \".\" ],\n                    [ \".\", \"processes_total\", \".\", \".\" ],\n                    [ \".\", \"processes_zombies\", \".\", \".\" ]\n                ],\n                \"region\": \"${Region}\",\n                \"title\": \"Processes\"\n            }\n        },\n        {\n            \"height\": 3,\n            \"width\": 14,\n            \"y\": 12,\n            \"x\": 10,\n            \"type\": \"metric\",\n            \"properties\": {\n                \"view\": \"timeSeries\",\n                \"stacked\": false,\n                \"metrics\": [\n                    [ \"${NameSpace}\", \"disk_free\", \"path\", \"/\", \"host\", \"${PrivateDnsName}\", \"device\", \"nvme0n1p1\", \"fstype\", \"xfs\" ],\n                    [ \".\", \"disk_used\", \".\", \".\", \".\", \".\", \".\", \".\", \".\", \".\" ]\n                ],\n                \"region\": \"${Region}\",\n                \"title\": \"HDD\"\n            }\n        },\n        {\n            \"height\": 3,\n            \"width\": 10,\n            \"y\": 12,\n            \"x\": 0,\n            \"type\": \"metric\",\n            \"properties\": {\n                \"metrics\": [\n                    [ \"${NameSpace}\", \"disk_total\", \"path\", \"/\", \"host\", \"${PrivateDnsName}\", \"device\", \"nvme0n1p1\", \"fstype\", \"xfs\" ],\n                    [ \".\", \"disk_free\", \".\", \".\", \".\", \".\", \".\", \".\", \".\", \".\" ],\n                    [ \".\", \"disk_used\", \".\", \".\", \".\", \".\", \".\", \".\", \".\", \".\" ]\n                ],\n                \"view\": \"singleValue\",\n                \"stacked\": false,\n                \"region\": \"${Region}\",\n                \"period\": 300,\n                \"stat\": \"Average\",\n                \"title\": \"HDD\"\n            }\n        },\n        {\n            \"height\": 3,\n            \"width\": 17,\n            \"y\": 15,\n            \"x\": 0,\n            \"type\": \"metric\",\n            \"properties\": {\n                \"metrics\": [\n                    [ \"${NameSpace}\", \"processes_total\", \"host\", \"${PrivateDnsName}\" ],\n                    [ \".\", \"processes_sleeping\", \".\", \".\" ],\n                    [ \".\", \"processes_running\", \".\", \".\" ],\n                    [ \".\", \"processes_stopped\", \".\", \".\" ],\n                    [ \".\", \"processes_zombies\", \".\", \".\" ]\n                ],\n                \"view\": \"singleValue\",\n                \"stacked\": false,\n                \"region\": \"${Region}\",\n                \"period\": 300,\n                \"stat\": \"Average\",\n                \"title\": \"Processes\"\n            }\n        },\n        {\n            \"height\": 3,\n            \"width\": 7,\n            \"y\": 3,\n            \"x\": 0,\n            \"type\": \"metric\",\n            \"properties\": {\n                \"view\": \"singleValue\",\n                \"stacked\": false,\n                \"metrics\": [\n                    [ \"AWS/EC2\", \"NetworkIn\", \"InstanceId\", \"${InstanceId}\" ],\n                    [ \".\", \"NetworkOut\", \".\", \".\" ]\n                ],\n                \"region\": \"${Region}\",\n                \"title\": \"Network\",\n                \"period\": 300\n            }\n        },\n        {\n            \"height\": 3,\n            \"width\": 4,\n            \"y\": 0,\n            \"x\": 0,\n            \"type\": \"metric\",\n            \"properties\": {\n                \"metrics\": [\n                    [ \"AWS/EC2\", \"CPUUtilization\", \"InstanceId\", \"${InstanceId}\" ]\n                ],\n                \"view\": \"singleValue\",\n                \"stacked\": false,\n                \"region\": \"${Region}\",\n                \"title\": \"CPU\",\n                \"period\": 300,\n                \"stat\": \"Average\"\n            }\n        },\n        {\n            \"height\": 3,\n            \"width\": 10,\n            \"y\": 6,\n            \"x\": 0,\n            \"type\": \"metric\",\n            \"properties\": {\n                \"metrics\": [\n                    [ \"AWS/EC2\", \"CPUCreditBalance\", \"InstanceId\", \"${InstanceId}\", { \"yAxis\": \"right\" } ],\n                    [ \".\", \"CPUCreditUsage\", \".\", \".\" ],\n                    [ \".\", \"CPUSurplusCreditsCharged\", \".\", \".\" ]\n                ],\n                \"view\": \"singleValue\",\n                \"stacked\": false,\n                \"region\": \"${Region}\",\n                \"stat\": \"Average\",\n                \"period\": 300,\n                \"title\": \"CPU Credit\"\n            }\n        }\n    ]\n}",
+						{
+							"InstanceId": {
+								"Ref": "EC2Instance"
+							},
+							"InstanceType": {
+								"Ref": "InstanceTypeParam"
+							},
+							"Region": {
+								"Ref": "AWS::Region"
+							},
+							"NameSpace": {
+								"Fn::Sub": "0x4447_samba_${UniqueIdentifierParam}"
+							},
+							"PrivateDnsName": {
+								"Fn::GetAtt": [
+									"EC2Instance",
+									"PrivateDnsName"
+								]
+							}
+						}
+					]
+				}
+			}
+		}
+	},
+	"Outputs": {
+		"PrivateIpOutput": {
+			"Value": {
+				"Fn::GetAtt": [
+					"EC2Instance",
+					"PrivateIp"
+				]
+			},
+			"Description": "The private IP of the instance."
+		}
+	}
+}

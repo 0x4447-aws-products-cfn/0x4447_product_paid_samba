@@ -3,6 +3,7 @@
 		"Type": "AWS::IAM::Role",
 		"Properties": {
 			"RoleName": { "Fn::Sub": "0x4447_samba_EC2_${UniqueIdentifierParam}" },
+            "Description" : "Grants EC2 permissions for logging, SSM access, and KMS decryption.",
 			"AssumeRolePolicyDocument": {
 				"Version": "2012-10-17",
 				"Statement": [
